@@ -1,0 +1,61 @@
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+int solution(string s) 
+{
+    int result = s.length(); // 압축이 되지 않을경우 문자열의 길이 그대로 반환
+    string resultString = "";
+    // 문자열의 길이가 n 일 경우 문자열의 절반까지만 압축가능 여부를 
+    // 확인하면 되므로 n/2 까지 탐색 (문자열을 몇개 자를지 확인하는 기준 i = 3 이면 문자열을 3개씩 잘라서 압축함)
+    for (int i = 1; i <= s.length() / 2; i++) 
+    {
+        int len = s.length();   // 문자열을 압축했을때의 길이 저장
+        int count = 1;  // 중복단어 개수 확인 변수
+        // 중복단어 확인을 위한 변수 초기화
+        string overlapWord = s.substr(0, i);
+        resultString = "";
+        for (int j = i; j < s.length(); j+=i)
+        {
+            string tempWord = s.substr(j, i);
+            // 두 단어가 같을 경우 (compare 함수는 두 단어가 같으면 0 반환)
+            if (overlapWord.compare(tempWord) == 0) 
+            {
+                count++;
+            }
+            else 
+            {
+                // count == 1 이면 중복 단어가 없다
+                if (count == 1) 
+                {
+                    resultString = resultString + overlapWord;
+                } 
+                else 
+                {
+                    resultString = resultString + to_string(count) + overlapWord;
+                }
+                count = 1;
+                overlapWord = tempWord;
+            }
+
+            //마지막에 substr기준을 초과한 경우
+            if (j + i >= s.length()) 
+            { 
+                if (count != 1) 
+                {
+                    resultString = resultString + to_string(count) + overlapWord;
+                }
+                else 
+                {
+                    resultString = resultString + s.substr(j);
+                }
+                break;
+            }
+        }
+        len = resultString.length();
+        //문자열 길이를 비교해서 적어진다면 적은걸로 변경
+        if (len < result)    result = len;
+    }
+    return result;
+}
